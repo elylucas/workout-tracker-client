@@ -1,0 +1,9 @@
+{
+  "baseUrl": "http://localhost:8080",
+  "component": {
+    "componentFolder": "src",
+    "testFiles": "**/*.cy.{js,jsx,ts,tsx}",
+    "pluginsFile": "cypress/component/ct-plugins.ts",
+    "supportFile": "cypress/component/ct-support.ts"
+  }
+}

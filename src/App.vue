@@ -1,30 +1,44 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div v-if="appReady" class="min-h-full box-border">
+    <Navigation />
+    <router-view />
   </div>
-  <router-view />
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import Navigation from './components/Navigation.vue';
+import { ref } from 'vue';
+import { supabase } from './supabase/init';
+import store from './store/index';
+export default {
+  components: {
+    Navigation,
+  },
+  setup() {
+    // Create data / vars
+    const appReady = ref(false);
+    const user = supabase.auth.user();
 
-#nav {
-  padding: 30px;
-}
+    // Check to see if user is already logged in
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+    // If user does not exist, need to make app ready
+    if (!user) {
+      appReady.value = true;
+    }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+    supabase.auth.onAuthStateChange((_, session) => {
+      store.methods.setUser(session);
+      appReady.value = true;
+    });
+
+    // Runs when there is a auth state change
+    // if user is logged in, this will fire
+
+    return { appReady };
+  },
+};
+</script>
+
+<style lang="css">
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
 </style>
